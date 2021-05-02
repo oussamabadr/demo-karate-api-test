@@ -1,0 +1,38 @@
+plugins {
+	id 'java'
+}
+
+group = 'or.badr'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+	test {
+		resources {
+			srcDir file('src/test/java')
+			exclude '**/*.java'
+		}
+	}
+}
+
+dependencies {
+	implementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2'
+
+	testImplementation group: 'com.intuit.karate', name: 'karate-junit5', version: '1.0.1'
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty "karate.options", System.properties.getProperty("karate.options")
+	systemProperty "karate.env", System.properties.getProperty("karate.env")
+	outputs.upToDateWhen { false }
+}
+
+task karateDebug(type: JavaExec) {
+	classpath = sourceSets.test.runtimeClasspath
+	main = 'com.intuit.karate.cli.Main'
+}
